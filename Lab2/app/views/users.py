@@ -1,8 +1,8 @@
 from flask import request, jsonify
 from app import app
-import uuid
 
 users = {}
+user_counter = 1
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
@@ -16,10 +16,11 @@ def delete_user(user_id):
 
 @app.route('/user', methods=['POST'])
 def create_user():
+    global user_counter
     data = request.get_json()
-    user_id = str(uuid.uuid4())
-    user = {"id": user_id, "name": data['name']}
-    users[user_id] = user
+    user = {"id": user_counter, "name": data['name']}
+    users[user_counter] = user
+    user_counter += 1
     return jsonify(user), 201
 
 @app.route('/users', methods=['GET'])
