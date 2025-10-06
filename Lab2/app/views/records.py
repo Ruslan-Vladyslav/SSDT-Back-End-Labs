@@ -3,7 +3,13 @@ from app import app
 from datetime import datetime
 
 records = {}
-record_counter = 1
+
+def records_data():
+    records[1] = {"id": 1, "user_id": 2, "category_id": 2, "amount": 25.5, "created_at": datetime.now().isoformat()}
+    records[2] = {"id": 2, "user_id": 3, "category_id": 3, "amount": 10.0, "created_at": datetime.now().isoformat()}
+
+records_data()
+record_counter = 3
 
 @app.route('/record', methods=['POST'])
 def create_record():

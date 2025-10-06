@@ -2,7 +2,14 @@ from flask import request, jsonify
 from app import app
 
 users = {}
-user_counter = 1
+
+def users_data():
+    users[2] = {"id": 2, "name": "Alice"}
+    users[3] = {"id": 3, "name": "Bob"}
+    users[4] = {"id": 4, "name": "Johny"}
+
+users_data()
+user_counter = 5
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
@@ -26,3 +33,8 @@ def create_user():
 @app.route('/users', methods=['GET'])
 def get_users():
     return jsonify(list(users.values())), 200
+
+def users_data():
+    users[1] = {"id": 1, "name": "Alice"}
+    users[2] = {"id": 2, "name": "Bob"}
+    users[3] = {"id": 3, "name": "Johny"}

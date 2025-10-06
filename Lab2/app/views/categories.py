@@ -2,7 +2,14 @@ from flask import request, jsonify
 from app import app
 
 categories = {}
-category_counter = 1
+
+def categories_data():
+    categories[2] = {"id": 2, "name": "Films"}
+    categories[3] = {"id": 3, "name": "Transport"}
+    categories[4] = {"id": 4, "name": "Entertainment"}
+
+categories_data()
+category_counter = 5
 
 @app.route('/category', methods=['GET'])
 def get_categories():
