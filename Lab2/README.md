@@ -1,4 +1,4 @@
-# Lab1 - A simple Flask application with a GET endpoint
+# Lab2 - Basic REST API
 
 ## Local Setup
 1. Navigate to the project folder
@@ -20,10 +20,8 @@ pip install -r requirements.txt
 flask --app app run -h 0.0.0.0 -p 8080
 ```
 
-6. Test the endpoint
-```bash
-http://127.0.0.1:8080/healthcheck
-```
+6. Test the endpoints in Postman App / locally
+
 
 ## Docker Setup (optional)
 
@@ -37,7 +35,4 @@ docker build . -t lab1-flask:latest
 docker run -it --rm -e PORT=8080 -p 8080:8080 lab1-flask:latest
 ```
 
-3. Test the endpoint
-```bash
-http://127.0.0.1:8080/healthcheck
-```
+3. Test the endpoints
