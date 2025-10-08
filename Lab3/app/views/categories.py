@@ -59,4 +59,5 @@ def delete_category(cat_id):
 
     db.session.delete(category)
     db.session.commit()
-    return '', 204
+
+    return jsonify({"message": f"Category with id {cat_id} has been deleted",}), 204

@@ -48,7 +48,7 @@ def delete_record(record_id):
     db.session.delete(record)
     db.session.commit()
 
-    return '', 204
+    return jsonify({"message": f"Record with id {record_id} has been deleted",}), 200
 
 
 @record_bp.route('/record', methods=['GET'])

@@ -48,4 +48,4 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
 
-    return '', 204
+    return jsonify({"message": f"User with id {user_id} has been deleted",}), 204
