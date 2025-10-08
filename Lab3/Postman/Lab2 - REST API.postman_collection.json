@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "92913aef-18bd-4cd5-999b-a31fae6f9aa1",
-		"name": "Lab2 - REST API",
+		"_postman_id": "1e47a326-9083-4a29-81e3-21b48d344150",
+		"name": "Lab3 - REST API, ORM",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "40211753"
+		"_exporter_id": "40211753",
+		"_collection_link": "https://www.postman.com/ruslan-cho/workspace/lab3-orm/collection/40211753-1e47a326-9083-4a29-81e3-21b48d344150?action=share&source=collection_link&creator=40211753"
 	},
 	"item": [
 		{
@@ -94,30 +95,36 @@
 			"name": "Category",
 			"item": [
 				{
-					"name": "Get Category",
+					"name": "Get Category/user_id",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/category",
+							"raw": "{{baseUrl}}/categories?user_id={{userId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"category"
+								"categories"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Post Category",
+					"name": "Post Category(custom)",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Food\"\r\n}",
+							"raw": "{\r\n  \"name\": \"NotGoodTools\",\r\n  \"owner_id\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -125,12 +132,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/category",
+							"raw": "{{baseUrl}}/categories",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"category"
+								"categories"
 							]
 						}
 					},
@@ -151,12 +158,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/category/{{categoryId}}",
+							"raw": "{{baseUrl}}/categories/{{categoryId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"category",
+								"categories",
 								"{{categoryId}}"
 							]
 						}
@@ -247,7 +254,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/record?user_id={{order_userId}}&category_id={{category_userId}}",
+							"raw": "{{baseUrl}}/record?user_id=534&category_id=34",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -257,11 +264,11 @@
 							"query": [
 								{
 									"key": "user_id",
-									"value": "{{order_userId}}"
+									"value": "534"
 								},
 								{
 									"key": "category_id",
-									"value": "{{category_userId}}"
+									"value": "34"
 								}
 							]
 						}
