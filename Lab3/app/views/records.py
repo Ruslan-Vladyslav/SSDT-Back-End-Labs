@@ -35,6 +35,10 @@ def create_record():
 @app.route('/record/<int:record_id>', methods=['GET'])
 def get_record(record_id):
     record = records.get(record_id)
+
+    if not record:
+        return jsonify({"error": "Record not found"}), 404
+    
     return jsonify(record), 200
 
 
@@ -43,6 +47,7 @@ def delete_record(record_id):
     if record_id in records:
         del records[record_id]
         return '', 204
+    return jsonify({"error": "Record not found"}), 404
 
 
 @app.route('/record', methods=['GET'])

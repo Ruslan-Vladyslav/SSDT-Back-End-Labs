@@ -20,9 +20,12 @@ def create_category():
     global category_counter
     data = request.get_json()
 
+    if not data or 'name' not in data:
+        return jsonify({"error": "Field 'name' is required"}), 400
+
     if any(cat['name'] == data['name'] for cat in categories.values()):
         return jsonify({"error": "Category already exists"}), 400
-
+    
     category = {"id": category_counter, "name": data['name']}
     categories[category_counter] = category
     category_counter += 1
@@ -33,3 +36,4 @@ def delete_category(cat_id):
     if cat_id in categories:
         del categories[cat_id]
         return '', 204
+    return jsonify({"error": "Category not found"}), 404
