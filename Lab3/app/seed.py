@@ -10,13 +10,15 @@ def seed_data():
         user2 = User(name="Bob")
         db.session.add(user2)
 
-    if not Category.query.filter_by(name="Food").first():
+    if not Category.query.filter_by(name="Food", is_custom=False).first():
         cat1 = Category(name="Food", is_custom=False)
         db.session.add(cat1)
-    if not Category.query.filter_by(name="Sweet-Food").first():
-        cat2 = Category(name="Food", is_custom=True)
+
+    if not Category.query.filter_by(name="Sweet-Food", is_custom=True, owner_id=1).first():
+        cat2 = Category(name="Sweet-Food", is_custom=True, owner_id=1)
         db.session.add(cat2)
-    if not Category.query.filter_by(name="Transport").first():
+
+    if not Category.query.filter_by(name="Transport", is_custom=False).first():
         cat3 = Category(name="Transport", is_custom=False)
         db.session.add(cat3)
 

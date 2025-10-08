@@ -17,7 +17,7 @@ def get_categories():
         categories = Category.query.filter_by(is_custom=False).all()
     else:
         categories = Category.query.filter(
-            (Category.is_custom == True) | (Category.owner_id == user_id)
+            (Category.is_custom == False) | (Category.owner_id == user_id)
         ).all()
 
     if not categories:
