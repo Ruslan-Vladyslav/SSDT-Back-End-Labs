@@ -1,35 +1,31 @@
 from flask import request, jsonify
 from app import app
 from datetime import datetime
+from app.schemas import RecordSchema
 
 records = {}
-
-def records_data():
-    records[1] = {"id": 1, "user_id": 2, "category_id": 2, "amount": 25.5, "created_at": datetime.now().isoformat()}
-    records[2] = {"id": 2, "user_id": 3, "category_id": 3, "amount": 10.0, "created_at": datetime.now().isoformat()}
-
-records_data()
-record_counter = 3
+record_counter = {"value": 1}
+record_schema = RecordSchema()
+records_schema = RecordSchema(many=True)
 
 @app.route('/record', methods=['POST'])
 def create_record():
-    global record_counter
-    data = request.get_json()
-    
-    if not data or 'user_id' not in data or 'category_id' not in data or 'amount' not in data:
-        return jsonify({"error": "user_id, category_id, and amount are required"}), 400
+    json_data = request.get_json()
+    errors = record_schema.validate(json_data)
+    if errors:
+        return jsonify(errors), 400
 
+    record_id = record_counter["value"]
     record = {
-        "id": record_counter,
-        "user_id": data['user_id'],
-        "category_id": data['category_id'],
-        "created_at": datetime.now().isoformat(),
-        "amount": data['amount']
+        "id": record_id,
+        "user_id": json_data['user_id'],
+        "category_id": json_data['category_id'],
+        "amount": json_data['amount'],
+        "created_at": datetime.now().isoformat()
     }
-
-    records[record_counter] = record
-    record_counter += 1
-    return jsonify(record), 201
+    records[record_id] = record
+    record_counter["value"] += 1
+    return record_schema.jsonify(record), 201
 
 
 @app.route('/record/<int:record_id>', methods=['GET'])
@@ -55,12 +51,9 @@ def get_records():
     user_id = request.args.get('user_id', type=int)
     category_id = request.args.get('category_id', type=int)
 
-    if user_id is None and category_id is None:
-        return jsonify({"error": "Provide at least user_id or category_id"}), 400
-
     filtered = [
         r for r in records.values()
-        if (not user_id or r['user_id'] == user_id)
-        and (not category_id or r['category_id'] == category_id)
+        if (user_id is None or r['user_id'] == user_id)
+        and (category_id is None or r['category_id'] == category_id)
     ]
-    return jsonify(filtered), 200
+    return records_schema.jsonify(filtered), 200

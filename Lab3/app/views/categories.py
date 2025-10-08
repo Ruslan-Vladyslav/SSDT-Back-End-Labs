@@ -1,39 +1,52 @@
 from flask import request, jsonify
-from app import app
+from app import app, db
+from app.models import Category
+from app.schemas import CategorySchema
 
-categories = {}
+category_schema = CategorySchema()
+categories_schema = CategorySchema(many=True)
 
-def categories_data():
-    categories[2] = {"id": 2, "name": "Films"}
-    categories[3] = {"id": 3, "name": "Transport"}
-    categories[4] = {"id": 4, "name": "Entertainment"}
-
-categories_data()
-category_counter = 5
-
+# GET: загальні + користувацькі даного user_id
 @app.route('/category', methods=['GET'])
 def get_categories():
-    return jsonify(list(categories.values())), 200
+    user_id = request.args.get('user_id', type=int)
+    if not user_id:
+        return jsonify({"error": "user_id is required"}), 400
+
+    categories = Category.query.filter(
+        (Category.is_custom == False) | (Category.owner_id == user_id)
+    ).all()
+    return categories_schema.jsonify(categories), 200
 
 @app.route('/category', methods=['POST'])
 def create_category():
-    global category_counter
-    data = request.get_json()
+    json_data = request.get_json()
+    errors = category_schema.validate(json_data)
+    if errors:
+        return jsonify(errors), 400
 
-    if not data or 'name' not in data:
-        return jsonify({"error": "Field 'name' is required"}), 400
-
-    if any(cat['name'] == data['name'] for cat in categories.values()):
+    exists = Category.query.filter(
+        (Category.name == json_data['name']) & 
+        ((Category.is_custom == False) | (Category.owner_id == json_data.get('owner_id')))
+    ).first()
+    if exists:
         return jsonify({"error": "Category already exists"}), 400
-    
-    category = {"id": category_counter, "name": data['name']}
-    categories[category_counter] = category
-    category_counter += 1
-    return jsonify(category), 201
+
+    category = Category(
+        name=json_data['name'],
+        is_custom=bool(json_data.get('owner_id')),
+        owner_id=json_data.get('owner_id')
+    )
+    db.session.add(category)
+    db.session.commit()
+    return category_schema.jsonify(category), 201
 
 @app.route('/category/<int:cat_id>', methods=['DELETE'])
 def delete_category(cat_id):
-    if cat_id in categories:
-        del categories[cat_id]
-        return '', 204
-    return jsonify({"error": "Category not found"}), 404
+    category = Category.query.get(cat_id)
+    if not category:
+        return jsonify({"error": "Category not found"}), 404
+
+    db.session.delete(category)
+    db.session.commit()
+    return '', 204
