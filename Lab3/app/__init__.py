@@ -13,16 +13,13 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from app.views import user_bp
+    from app.views import user_bp, category_bp, record_bp, healthcheck_bp
     app.register_blueprint(user_bp)
-
-    from app.views import category_bp
     app.register_blueprint(category_bp)
-
-    from app.views import record_bp
     app.register_blueprint(record_bp)
-
-    from app.views import healthcheck_bp
     app.register_blueprint(healthcheck_bp)
+
+    with app.app_context():
+        db.create_all()
 
     return app
