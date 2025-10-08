@@ -1,4 +1,4 @@
-# Lab2 - Basic REST API
+# Lab3 - REST API & ORM
 
 ## Local Setup
 1. Navigate to the project folder
