@@ -1,38 +1,69 @@
 # Lab3 - REST API & ORM
 
-## Local Setup
-1. Navigate to the project folder
+## Variant
 
-2. Create a virtual environment (optional)
+**Group Number:** `5`  
+**Variant:** `5 mod 3` = 2  
+
+- `1` → Currencies  
+- `2` → Custom expense categories  
+- `0` → Income tracking  
+
+**This project implements:**  
+- **Custom expense categories** (variant 2)  
+  - Public categories (visible to all users)  
+  - User-specific categories (visible only to the owner)
+
+---
+
+## Local Setup
+
+Follow these steps to run the project locally with PostgreSQL.
+
+1. Clone the repository and navigate to project folder
+
+2. Create a virtual environment
 ```bash
-python3 -m venv env
+python -m venv env
+source env/bin/activate      # Linux/macOS
+env\Scripts\activate         # Windows
 ```
 
-3. Activate the virtual environment
-
-4. Install dependencies
+3. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-5. Run the Flask application
+4. Configure environment variables
 ```bash
-flask --app app run -h 0.0.0.0 -p 8080
+POSTGRES_USER=user         # your user name
+POSTGRES_PASSWORD=password # your password
+POSTGRES_DB=db
+DB_HOST=localhost
+FLASK_APP=app
+FLASK_ENV=development
+FLASK_RUN_HOST=0.0.0.0
+FLASK_RUN_PORT=8080
 ```
 
-6. Test the endpoints in Postman App / locally
+5. Run PostgreSQL locally
+   - Option A — Install PostgreSQL
+   - Option B — Run PostgreSQL via Docker:
+    ```bash
+    docker run --name expenses-db -e POSTGRES_USER=myuser -e POSTGRES_PASSWORD=mysecurepassword -e POSTGRES_DB=expenses_db -p 5432:5432 -d postgres:15
+    ```
 
+    ```bash
+    docker-compose build
+    docker-compose up -d
+    ```
 
-## Docker Setup (optional)
-
-1. Build the Docker image
+6. Initialize seed data (optional)
 ```bash
-docker build . -t lab1-flask:latest
+ python -m app.seed 
 ```
 
-2. Run the container
+7. Run the Flask application
 ```bash
-docker run -it --rm -e PORT=8080 -p 8080:8080 lab1-flask:latest
+ python -m app # or flask run
 ```
-
-3. Test the endpoints
