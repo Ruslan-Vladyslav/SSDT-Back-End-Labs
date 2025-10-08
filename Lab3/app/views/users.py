@@ -1,43 +1,51 @@
-from flask import request, jsonify
-from app import app
+from flask import Blueprint, jsonify, request
+from app import db
+from app.models import User
 from app.schemas import UserSchema
 
-users = {}
-user_counter = {"value": 1}
+user_bp = Blueprint('user', __name__)
+
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
 
-@app.route('/user/<int:user_id>', methods=['GET'])
-def get_user(user_id):
-    user = users.get(user_id)
+@user_bp.route('/users', methods=['GET'])
+def get_users():
+    all_users = User.query.all()
+    if not all_users:
+        return jsonify({"message": "No users found"}), 404
+    return jsonify(users_schema.dump(all_users)), 200
 
+
+@user_bp.route('/user/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "User not found"}), 404
-    
-    return jsonify(user), 200
+    return jsonify(user_schema.dump(user)), 200
 
-@app.route('/user/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    if user_id not in users:
-        return jsonify({"error": "User not found"}), 404
-    
-    users.pop(user_id)
-    return '', 204
 
-@app.route('/user', methods=['POST'])
+@user_bp.route('/user', methods=['POST'])
 def create_user():
     json_data = request.get_json()
     errors = user_schema.validate(json_data)
     if errors:
         return jsonify(errors), 400
 
-    user_id = user_counter["value"]
-    user = {"id": user_id, "name": json_data['name']}
-    users[user_id] = user
-    user_counter["value"] += 1
-    return user_schema.jsonify(user), 201
+    new_user = User(name=json_data['name'])
+    db.session.add(new_user)
+    db.session.commit()
 
-@app.route('/users', methods=['GET'])
-def get_users():
-     return users_schema.jsonify(list(users.values())), 200
+    return jsonify(user_schema.dump(new_user)), 201
+
+
+@user_bp.route('/user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return '', 204

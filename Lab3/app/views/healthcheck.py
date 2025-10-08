@@ -1,10 +1,11 @@
-from app import app
-from flask import jsonify
+from flask import Blueprint, jsonify
 from datetime import datetime
 
-@app.route('/healthcheck')
+healthcheck_bp = Blueprint('health', __name__)
+
+@healthcheck_bp.route('/healthcheck')
 def healthcheck():
-     return jsonify({
+    return jsonify({
         "status": "OK",
         "date": datetime.utcnow().isoformat()
     }), 200
