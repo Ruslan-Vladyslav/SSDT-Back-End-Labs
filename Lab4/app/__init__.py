@@ -1,17 +1,25 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager
+from app.extensions.jwt_handlers import init_jwt
+import os
 
 
 db = SQLAlchemy()
 migrate = Migrate()
+jwt = JWTManager() 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('../config.py', silent=False)
 
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+
     db.init_app(app)
     migrate.init_app(app, db)
+    jwt.init_app(app)  
+    init_jwt(app)
 
     from app.views import user_bp, category_bp, record_bp, healthcheck_bp
     app.register_blueprint(user_bp)

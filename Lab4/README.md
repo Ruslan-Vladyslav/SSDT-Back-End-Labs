@@ -1,4 +1,4 @@
-# Lab3 - REST API & ORM
+# Lab4 - REST API & ORM
 
 ## Variant
 
@@ -34,7 +34,7 @@ env\Scripts\activate         # Windows
 pip install -r requirements.txt
 ```
 
-4. Configure environment variables
+4. Configure environment variables in .env file
 ```bash
 POSTGRES_USER=user         # your user name
 POSTGRES_PASSWORD=password # your password
@@ -57,6 +57,25 @@ FLASK_RUN_PORT=8080
     docker-compose build
     docker-compose up -d
     ```
+     ```bash
+    docker-compose down -v # delete database
+    ```
+
+    To initialize database with migrations use
+    ```bash
+    flask db upgrade
+    ```
+
+    To check database connection use
+    ```bash
+    python -m testDB.test_db
+    ```
+
+    To check database tables use
+    ```bash
+    python -m testDB.test_models
+    ```
+
 
 6. Initialize seed data (optional)
 ```bash

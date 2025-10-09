@@ -3,6 +3,7 @@ from marshmallow import Schema, fields, validate
 class UserSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True, validate=validate.Length(min=1))
+    password = fields.Str(load_only=True, required=True, validate=validate.Length(min=4))
 
 class CategorySchema(Schema):
     id = fields.Int(dump_only=True)

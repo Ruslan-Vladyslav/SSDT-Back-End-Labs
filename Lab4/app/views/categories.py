@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from app import db
 from app.models import Category
 from app.schemas import CategorySchema
@@ -10,6 +11,7 @@ categories_schema = CategorySchema(many=True)
 
 
 @category_bp.route('/categories', methods=['GET'])
+@jwt_required()
 def get_categories():
     user_id = request.args.get('user_id', type=int)
 
@@ -27,6 +29,7 @@ def get_categories():
 
 
 @category_bp.route('/categories', methods=['POST'])
+@jwt_required()
 def create_category():
     json_data = request.get_json()
     errors = category_schema.validate(json_data)
@@ -52,6 +55,7 @@ def create_category():
 
 
 @category_bp.route('/categories/<int:cat_id>', methods=['DELETE'])
+@jwt_required()
 def delete_category(cat_id):
     category = Category.query.get(cat_id)
     if not category:

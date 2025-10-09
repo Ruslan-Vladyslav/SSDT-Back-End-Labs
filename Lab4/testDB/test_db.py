@@ -5,6 +5,6 @@ app = create_app()
 with app.app_context():
     try:
         db.session.execute(text("SELECT 1"))
-        print("✅ Database is working!")
+        print("\n✅ Database is working!")
     except Exception as e:
-        print("❌ Database connection failed:", e)
+        print("\n❌ Database connection failed:", e)
