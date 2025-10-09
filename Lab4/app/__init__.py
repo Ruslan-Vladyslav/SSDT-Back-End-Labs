@@ -25,7 +25,7 @@ def create_app():
     app.register_blueprint(record_bp)
     app.register_blueprint(healthcheck_bp)
 
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
 
     return app
