@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 from app import db
 from app.models import User
 from app.schemas import UserSchema
@@ -13,6 +14,7 @@ users_schema = UserSchema(many=True)
 
 
 @user_bp.route('/users', methods=['GET'])
+@jwt_required()
 def get_users():
     all_users = User.query.all()
     if not all_users:
@@ -21,6 +23,7 @@ def get_users():
 
 
 @user_bp.route('/user/<int:user_id>', methods=['GET'])
+@jwt_required()
 def get_user(user_id):
     user = User.query.get(user_id)
     if not user:
@@ -29,6 +32,7 @@ def get_user(user_id):
 
 
 @user_bp.route('/user/<int:user_id>', methods=['DELETE'])
+@jwt_required()
 def delete_user(user_id):
     user = User.query.get(user_id)
     if not user:
@@ -51,8 +55,8 @@ def register():
     if User.query.filter_by(name=json_data['name']).first():
         return jsonify({"error": "User already exists"}), 400
 
-    hashed_password = pbkdf2_sha256.hash(json_data['password'])
-    new_user = User(name=json_data['name'], password=hashed_password)
+    new_password = pbkdf2_sha256.hash(json_data['password'])
+    new_user = User(name=json_data['name'], password=new_password)
 
     db.session.add(new_user)
     db.session.commit()
@@ -63,11 +67,12 @@ def register():
 @user_bp.route('/login', methods=['POST'])
 def login():
     json_data = request.get_json()
+
     if not json_data.get('name') or not json_data.get('password'):
         return jsonify({"error": "Missing username or password"}), 400
 
     user = User.query.filter_by(name=json_data['name']).first()
-    
+
     if user and pbkdf2_sha256.verify(json_data['password'], user.password):
         access_token = create_access_token(identity=user.id)
         return jsonify({"access_token": access_token}), 200

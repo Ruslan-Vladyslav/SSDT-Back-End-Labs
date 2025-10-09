@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from app import db
 from app.models import Record, Category, User
 from app.schemas import RecordSchema
@@ -11,6 +12,7 @@ records_schema = RecordSchema(many=True)
 
 
 @record_bp.route('/record', methods=['POST'])
+@jwt_required()
 def create_record():
     json_data = request.get_json()
     errors = record_schema.validate(json_data)
@@ -29,6 +31,7 @@ def create_record():
 
 
 @record_bp.route('/record/<int:record_id>', methods=['GET'])
+@jwt_required()
 def get_record(record_id):
     record = Record.query.get(record_id)
 
@@ -39,6 +42,7 @@ def get_record(record_id):
 
 
 @record_bp.route('/record/<int:record_id>', methods=['DELETE'])
+@jwt_required()
 def delete_record(record_id):
     record = Record.query.get(record_id)
 
@@ -52,6 +56,7 @@ def delete_record(record_id):
 
 
 @record_bp.route('/record', methods=['GET'])
+@jwt_required()
 def get_records():
     user_id = request.args.get('user_id', type=int)
     category_id = request.args.get('category_id', type=int)

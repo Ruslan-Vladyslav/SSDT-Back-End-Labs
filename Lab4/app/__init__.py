@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
+from app.extensions.jwt_handlers import init_jwt
 import os
 
 
@@ -18,6 +19,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)  
+    init_jwt(app)
 
     from app.views import user_bp, category_bp, record_bp, healthcheck_bp
     app.register_blueprint(user_bp)
