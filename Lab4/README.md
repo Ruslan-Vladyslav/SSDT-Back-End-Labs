@@ -1,4 +1,4 @@
-# Lab3 - REST API & ORM
+# Lab4 - REST API & ORM
 
 ## Variant
 
@@ -57,6 +57,15 @@ FLASK_RUN_PORT=8080
     docker-compose build
     docker-compose up -d
     ```
+     ```bash
+    docker-compose down -v # delete database
+    ```
+
+    To initialize database with migrations use:
+    ```bash
+    flask db upgrade
+    ```
+
 
 6. Initialize seed data (optional)
 ```bash

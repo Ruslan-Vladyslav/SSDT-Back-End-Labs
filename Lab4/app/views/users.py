@@ -74,7 +74,7 @@ def login():
     user = User.query.filter_by(name=json_data['name']).first()
 
     if user and pbkdf2_sha256.verify(json_data['password'], user.password):
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
         return jsonify({"access_token": access_token}), 200
     
     return jsonify({"error": "Invalid credentials"}), 401
