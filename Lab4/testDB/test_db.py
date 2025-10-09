@@ -1,4 +1,4 @@
-from app import create_app, db
+from ..app import create_app, db
 from sqlalchemy import text
 
 app = create_app()
